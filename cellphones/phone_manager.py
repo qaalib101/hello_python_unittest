@@ -80,10 +80,6 @@ class PhoneAssignments():
                             raise Exception('This phone is already assigned to an employee')
 
 
-
-
-
-
     def un_assign(self, phone_id):
         # Find phone in list, set employee_id to None
         for phone in self.phones:
