@@ -17,7 +17,7 @@ class Phone():
 
 
     def is_assigned(self):
-        return self.employee_id is not None
+        return self.employee_id
 
 
     def __str__(self):
@@ -46,11 +46,17 @@ class PhoneAssignments():
 
     def add_employee(self, employee):
         # TODO raise exception if two employees with same ID are added
+        for e in self.employees:
+            if e.id == employee.id:
+                raise PhoneError('Employees with same id cannot be added')
         self.employees.append(employee)
 
 
     def add_phone(self, phone):
         # TODO raise exception if two phones with same ID are added
+        for p in self.phones:
+            if p.id == phone.id:
+                raise PhoneError('Phones with same id cannot be added')
         self.phones.append(phone)
 
 
@@ -59,10 +65,23 @@ class PhoneAssignments():
         # TODO if phone is already assigned to an employee, do not change list, raise exception
         # TODO if employee already has a phone, do not change list, and raise exception
         # TODO if employee already has this phone, don't make any changes. This should NOT raise an exception.
-        for phone in self.phones:
-            if phone.id == phone_id:
-                phone.assign(employee.id)
-                return
+        for e in self.employees:
+            for phone in self.phones:
+                if phone.is_assigned() == e.id:
+                    raise Exception('Employee is already assigned to a phone')
+                if phone.id == phone_id:
+                    if phone.is_assigned() is None:
+                        phone.assign(employee.id)
+                        return phone
+                    elif phone.is_assigned() is not None:
+                        if phone.is_assigned() == employee.id:
+                            return phone
+                        else:
+                            raise Exception('This phone is already assigned to an employee')
+
+
+
+
 
 
     def un_assign(self, phone_id):
@@ -77,6 +96,8 @@ class PhoneAssignments():
 
         # TODO  should return None if the employee does not have a phone
         # TODO  the method should raise an exception if the employee does not exist
+        if employee not in self.employees:
+            raise PhoneError('Employee does not exist')
 
         for phone in self.phones:
             if phone.employee_id == employee.id:
